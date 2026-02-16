@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Tarjetas digitales
 
-## Getting Started
+Web de presentación con tarjetas digitales personalizadas. Cada persona tiene su propia URL según la carpeta en el proyecto.
 
-First, run the development server:
+## Estructura de URLs
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **/** → Página de presentación (listado de tarjetas)
+- **/tarjeta-naza** → Tarjeta de Naza (carpeta `app/tarjeta-naza/page.tsx`)
+- **/tarjeta-juan** → Tarjeta de Juan (crear `app/tarjeta-juan/page.tsx`)
+
+## Cómo agregar una tarjeta nueva
+
+1. Crea una carpeta dentro de `app/` con el nombre de la ruta que quieras, por ejemplo: `app/tarjeta-maria/`
+2. Dentro, crea `page.tsx` que use el componente `TarjetaDigital`:
+
+```tsx
+import { TarjetaDigital } from "../components/TarjetaDigital";
+
+export const metadata = {
+  title: "María | Tarjeta digital",
+  description: "Tarjeta digital de María",
+};
+
+export default function TarjetaMariaPage() {
+  return (
+    <TarjetaDigital
+      nombre="María"
+      titulo="Diseñadora"
+      empresa="Studio"
+      email="maria@ejemplo.com"
+      telefono="+54 11 9876-5432"
+      links={[
+        { label: "LinkedIn", href: "https://linkedin.com/in/maria" },
+      ]}
+    />
+  );
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Añade la entrada en la lista de la página principal (`app/page.tsx`) en el array `tarjetas` si quieres que aparezca en el listado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Desarrollo local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+Abre [http://localhost:3000](http://localhost:3000).
 
-To learn more about Next.js, take a look at the following resources:
+## Subir a Git
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+git add .
+git commit -m "Tarjetas digitales - landing y ejemplo tarjeta-naza"
+git remote add origin https://github.com/TU-USUARIO/tarjeta-digital-agus.git
+git branch -M main
+git push -u origin main
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Desplegar en Vercel
 
-## Deploy on Vercel
+1. Entra en [vercel.com](https://vercel.com) e inicia sesión (con GitHub si ya subiste el repo).
+2. **Add New Project** → importa el repositorio `tarjeta-digital-agus`.
+3. Vercel detecta Next.js automáticamente. Deja las opciones por defecto y haz clic en **Deploy**.
+4. Tu sitio quedará en `https://tarjeta-digital-agus.vercel.app` (o el nombre que elijas). Cada push a `main` se desplegará solo.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Si prefieres usar la CLI:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm i -g vercel
+vercel
+```
+
+Sigue los pasos y enlaza el proyecto a tu repo de Git para despliegues automáticos.
