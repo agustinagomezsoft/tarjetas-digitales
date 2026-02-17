@@ -25,8 +25,28 @@ const greatVibes = Great_Vibes({
 });
 
 export const metadata: Metadata = {
-  title: "Tarjetas digitales",
-  description: "Tarjetas de presentación digitales personalizadas por persona",
+  title: "Agustina | Tarjetas Digitales",
+  description: "Invitaciones y tarjetas digitales personalizadas para tus eventos especiales. XV años, bodas, cumpleaños y más. Diseños únicos y elegantes.",
+  keywords: ["tarjetas digitales", "invitaciones digitales", "XV años", "quinceañera", "bodas", "cumpleaños", "invitaciones online", "Tucumán", "Argentina"],
+  authors: [{ name: "Agustina Gomez" }],
+  creator: "Agustina Gomez",
+  openGraph: {
+    title: "Agustina | Tarjetas Digitales",
+    description: "Invitaciones y tarjetas digitales personalizadas para tus eventos especiales. Diseños únicos y elegantes.",
+    type: "website",
+    locale: "es_AR",
+    siteName: "Agustina Tarjetas Digitales",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Agustina | Tarjetas Digitales",
+    description: "Invitaciones y tarjetas digitales personalizadas para tus eventos especiales.",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
+  manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
