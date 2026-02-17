@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
+import { useParams, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calendar, MapPin, Clock, Pause, Play, ChevronDown, Sparkles, Church, PartyPopper, Shirt, Gift, Copy, Check, Star, Heart, Camera, ImageIcon, X, ExternalLink } from "lucide-react";
 import clsx from "clsx";
@@ -36,7 +37,26 @@ const CONFIG = {
     ],
 };
 
-export default function TarjetaNaza() {
+// Función para formatear el nombre de familia desde la URL
+function formatFamilyName(slug: string): string {
+    // familia-medina -> Familia Medina
+    return slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
+
+export default function InvitacionPersonalizada() {
+    const params = useParams();
+    const searchParams = useSearchParams();
+
+    // Obtener nombre de familia desde la URL: /invitacion/[familia]
+    const familiaSlug = params.familia as string || "invitado";
+    const familiaName = formatFamilyName(familiaSlug);
+
+    // Obtener cantidad de personas desde query params: ?personas=2
+    const cantidadPersonas = parseInt(searchParams.get("p") || "1");
+
     const [showContent, setShowContent] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [countdown, setCountdown] = useState({ dias: 0, horas: 0, minutos: 0, segundos: 0 });
@@ -59,17 +79,13 @@ export default function TarjetaNaza() {
         return () => clearInterval(timer);
     }, []);
 
-    // MODIFICADO: Audio comienza desde la pantalla de bienvenida
     useEffect(() => {
         fetch("/audio/frozen-vuelie.mp3", { method: "HEAD" }).then((r) => {
             if (r.ok) {
                 audioRef.current = new Audio("/audio/frozen-vuelie.mp3");
                 audioRef.current.loop = true;
                 audioRef.current.volume = 0.5;
-                // Intentar reproducir automáticamente
-                audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {
-                    // Si el navegador bloquea autoplay, se activará con interacción
-                });
+                audioRef.current.play().then(() => setIsPlaying(true)).catch(() => { });
             }
         }).catch(() => { });
         return () => { if (audioRef.current) { audioRef.current.pause(); } };
@@ -83,17 +99,16 @@ export default function TarjetaNaza() {
 
     const handleEnter = () => {
         setShowContent(true);
-        // Si no se pudo reproducir antes, intentar ahora con la interacción del usuario
         if (audioRef.current && !isPlaying) {
             audioRef.current.play().then(() => setIsPlaying(true)).catch(() => { });
         }
     };
 
+    // PANTALLA DE BIENVENIDA PERSONALIZADA
     if (!showContent) {
         return (
             <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#0a1628] via-[#1a3a5c] to-[#2d5a7b]">
                 <StarsBackground /><MagicParticles /><Snowflakes />
-                {/* Botón de música en pantalla de bienvenida */}
                 <motion.button
                     onClick={toggleMusic}
                     className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-[#1e90ff] to-[#0a4d8c] shadow-lg flex items-center justify-center border-2 border-white/30"
@@ -112,9 +127,20 @@ export default function TarjetaNaza() {
                         <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}><CastleSVG /></motion.div>
                     </motion.div>
                     <motion.div className="text-center mb-6" variants={staggerItem}>
+                        {/* NOMBRE DE FAMILIA PERSONALIZADO */}
+                        <div className="mb-6">
+                            <p className="text-[#87CEEB] text-xs tracking-[0.3em] uppercase mb-2">Invitación especial para</p>
+                            <h2 className="text-3xl md:text-4xl text-white frozen-name">{familiaName}</h2>
+                            {cantidadPersonas > 1 && (
+                                <p className="text-[#87CEEB]/80 text-sm mt-2">({cantidadPersonas} personas)</p>
+                            )}
+                        </div>
+
+                        <div className="w-16 h-[1px] bg-gradient-to-r from-transparent via-[#87CEEB]/50 to-transparent mx-auto mb-6" />
+
                         <div className="flex items-center justify-center gap-2 mb-3">
                             <SnowflakeIcon className="w-5 h-5 text-[#87CEEB] animate-spin-slow" />
-                            <p className="text-[#87CEEB] text-xs tracking-[0.4em] uppercase">Estás invitado a</p>
+                            <p className="text-[#87CEEB] text-xs tracking-[0.4em] uppercase">a los XV de</p>
                             <SnowflakeIcon className="w-5 h-5 text-[#87CEEB] animate-spin-slow" />
                         </div>
                         <h1 className="text-5xl md:text-7xl text-white mb-2 frozen-title">MIS <span className="text-[#87CEEB]">XV</span></h1>
@@ -148,8 +174,7 @@ export default function TarjetaNaza() {
             <AnimatePresence mode="wait">
                 {showAlbumModal && <AlbumModal key="album-modal" onClose={() => setShowAlbumModal(false)} />}
             </AnimatePresence>
-            <Section1Portada countdown={countdown} />
-            {/* NUEVO ORDEN: Fiesta -> DressCode -> Ceremonia Religiosa */}
+            <Section1Portada countdown={countdown} familiaName={familiaName} />
             <Section2Fiesta />
             <Section3DressCode />
             <Section4Ceremonia />
@@ -159,13 +184,13 @@ export default function TarjetaNaza() {
             <Section8Regalo />
             <Section9Fotos2 />
             <Section10Quiz />
-            <Section11Confirmacion />
+            <Section11Confirmacion familiaName={familiaName} cantidadInicial={cantidadPersonas} />
             <Section12Despedida />
         </div>
     );
 }
 
-function Section1Portada({ countdown }: { countdown: { dias: number; horas: number; minutos: number; segundos: number } }) {
+function Section1Portada({ countdown, familiaName }: { countdown: { dias: number; horas: number; minutos: number; segundos: number }, familiaName: string }) {
     const items = [{ v: countdown.dias, l: "Dias" }, { v: countdown.horas, l: "Horas" }, { v: countdown.minutos, l: "Min" }, { v: countdown.segundos, l: "Seg" }];
     return (
         <section className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#0a1628] via-[#1a3a5c] to-[#5F84A2]">
@@ -178,6 +203,11 @@ function Section1Portada({ countdown }: { countdown: { dias: number; horas: numb
             >
                 <motion.div className="mb-4 w-28 h-28" variants={staggerItem}><CastleSVG /></motion.div>
                 <motion.div className="text-center mb-8" variants={staggerItem}>
+                    {/* Badge con nombre de familia */}
+                    <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-4 border border-white/20">
+                        <Heart className="w-4 h-4 text-pink-300" />
+                        <span className="text-white/90 text-sm">{familiaName}</span>
+                    </div>
                     <p className="text-[#87CEEB] text-xs tracking-[0.4em] uppercase mb-2">Celebremos juntos</p>
                     <h1 className="text-4xl md:text-6xl text-white frozen-title">MIS <span className="text-[#87CEEB]">XV</span></h1>
                     <h2 className="text-5xl md:text-7xl text-[#E0F4FF] mt-2 frozen-name">{CONFIG.nombre}</h2>
@@ -200,7 +230,6 @@ function Section1Portada({ countdown }: { countdown: { dias: number; horas: numb
     );
 }
 
-// SECCION FIESTA (ahora primera después de portada)
 function Section2Fiesta() {
     return (
         <motion.section
@@ -217,7 +246,6 @@ function Section2Fiesta() {
                 </div>
                 <h3 className="text-center text-2xl text-white mb-6 frozen-title">FIESTA</h3>
                 <motion.div className="frozen-card-light bg-white/80 rounded-3xl p-6 text-center border border-white/60" whileHover={{ y: -2, boxShadow: "0 12px 40px rgba(30,144,255,0.15)" }}>
-                    {/* Fecha grande */}
                     <p className="text-5xl text-[#1e90ff] frozen-name mb-2">{CONFIG.evento.dia}</p>
                     <p className="text-xl text-[#194569]">de {CONFIG.evento.mes}</p>
                     <p className="text-2xl text-[#194569] frozen-title mb-4">{CONFIG.evento.anio}</p>
@@ -235,7 +263,6 @@ function Section2Fiesta() {
     );
 }
 
-// SECCION DRESS CODE (ahora segunda)
 function Section3DressCode() {
     return (
         <motion.section
@@ -262,7 +289,6 @@ function Section3DressCode() {
     );
 }
 
-// SECCION CEREMONIA RELIGIOSA (ahora tercera)
 function Section4Ceremonia() {
     return (
         <motion.section
@@ -539,8 +565,13 @@ function Section10Quiz() {
     );
 }
 
-function Section11Confirmacion() {
-    const [form, setForm] = useState({ cant: "1", inv: [{ nombre: "", apellido: "", confirma: true, alim: "ninguno", cancion: "" }] });
+// CONFIRMACIÓN CON NOMBRE DE FAMILIA Y CANTIDAD PRE-CARGADA
+function Section11Confirmacion({ familiaName, cantidadInicial }: { familiaName: string, cantidadInicial: number }) {
+    const cantInicial = Math.min(Math.max(cantidadInicial, 1), 5).toString();
+    const [form, setForm] = useState({
+        cant: cantInicial,
+        inv: Array.from({ length: parseInt(cantInicial) }, () => ({ nombre: "", apellido: "", confirma: true, alim: "ninguno", cancion: "" }))
+    });
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -561,7 +592,11 @@ function Section11Confirmacion() {
             const res = await fetch("/api/confirmacion", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ cant: form.cant, inv: form.inv }),
+                body: JSON.stringify({
+                    cant: form.cant,
+                    inv: form.inv,
+                    familia: familiaName
+                }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Error al enviar");
@@ -577,7 +612,7 @@ function Section11Confirmacion() {
         <section className="frozen-section py-20 px-6 bg-gradient-to-b from-[#91AEC4] to-[#5F84A2]">
             <div className="max-w-md mx-auto text-center">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#1e90ff] to-[#4169e1] mx-auto mb-6 flex items-center justify-center"><Sparkles className="w-12 h-12 text-white" /></div>
-                <h3 className="text-2xl text-white frozen-title mb-4">¡Gracias por confirmar!</h3>
+                <h3 className="text-2xl text-white frozen-title mb-4">¡Gracias {familiaName}!</h3>
                 <p className="text-[#D8ECF4]">Tu confirmación ha sido registrada. ¡Te esperamos!</p>
             </div>
         </section>
@@ -596,8 +631,14 @@ function Section11Confirmacion() {
                 <div className="w-20 h-20 rounded-full bg-white/25 flex items-center justify-center mx-auto mb-6 border-2 border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.2)]">
                     <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 </div>
-                <h3 className="text-center text-2xl text-white frozen-title mb-4">CONFIRMÁ TU ASISTENCIA</h3>
-                {/* MODIFICADO: Fecha más grande */}
+                <h3 className="text-center text-2xl text-white frozen-title mb-2">CONFIRMÁ TU ASISTENCIA</h3>
+                {/* Badge con nombre de familia */}
+                <div className="flex justify-center mb-4">
+                    <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 border border-white/30">
+                        <Heart className="w-4 h-4 text-pink-300" />
+                        <span className="text-white text-sm font-medium">{familiaName}</span>
+                    </div>
+                </div>
                 <div className="text-center mb-8">
                     <p className="text-white/70 text-sm mb-2">Tenés tiempo hasta el</p>
                     <p className="text-2xl md:text-3xl text-white font-semibold">{CONFIG.fechaLimiteConfirmacion}</p>
@@ -665,6 +706,8 @@ function Section12Despedida() {
         </motion.section>
     );
 }
+
+
 
 // COMPONENTES DECORATIVOS
 function Snowflakes() {
