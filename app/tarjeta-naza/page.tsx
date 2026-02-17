@@ -18,7 +18,7 @@ const CONFIG = {
     fechaEvento: new Date("2026-04-11T22:00:00"),
     evento: { dia: "11", mes: "Abril", anio: "2026", hora: "22:00 hs" },
     misa: { fecha: "16 de Marzo", hora: "20:00 hs", lugar: "Parroquia María Reina", direccion: "El Manantial, Tucumán", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Parroquia+Maria+Reina+El+Manantial+Tucuman" },
-    fiesta: { fecha: "11 de Abril de 2026", hora: "11 de Abril · 22:00 hs · 05:30 hs", lugar: "Salón de Fiestas", direccion: "Narcizo Eventos, Lules, Tucumán", mapsUrl: "https://www.google.com/maps/search/?api=1&query=+Narcizo+Eventos+Lules+Tucuman" },
+    fiesta: { fecha: "11 de Abril de 2026", hora: "· 22:00 hs · 05:30 hs ·", lugar: "Salón de Fiestas", direccion: "Narcizo Eventos, Lules, Tucumán", mapsUrl: "https://www.google.com/maps/search/?api=1&query=+Narcizo+Eventos+Lules+Tucuman" },
     dressCode: "Elegante",
     dressCodeNota: "La gama del color celeste / azul se reserva para la quinceañera.",
     fechaLimiteConfirmacion: "17 de Marzo de 2026",

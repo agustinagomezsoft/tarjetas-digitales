@@ -100,7 +100,7 @@ export default function Home() {
               Creamos invitaciones únicas y personalizadas para tu evento especial.
             </p>
             <a
-              href="https://wa.me/5493814XXXXXX?text=Hola%20Agustina!%20Quiero%20una%20tarjeta%20digital"
+              href="https://wa.me/5493816477416?text=Hola%20Agustina!%20Quiero%20una%20tarjeta%20digital"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-6 py-3 bg-white text-purple-600 font-semibold rounded-full hover:bg-purple-50 transition-colors"
@@ -120,7 +120,7 @@ export default function Home() {
           </p>
           <div className="mt-4 flex items-center justify-center gap-4">
             <a
-              href="https://instagram.com/tu_usuario"
+              href="https://instagram.com/__agussgomez"
               target="_blank"
               rel="noopener noreferrer"
               className="text-slate-400 hover:text-rose-500 transition-colors"
