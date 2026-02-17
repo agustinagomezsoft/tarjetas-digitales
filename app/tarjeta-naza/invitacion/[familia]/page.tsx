@@ -140,7 +140,7 @@ export default function InvitacionPersonalizada() {
 
                         <div className="flex items-center justify-center gap-2 mb-3">
                             <SnowflakeIcon className="w-5 h-5 text-[#87CEEB] animate-spin-slow" />
-                            <p className="text-[#87CEEB] text-xs tracking-[0.4em] uppercase">a los XV de</p>
+
                             <SnowflakeIcon className="w-5 h-5 text-[#87CEEB] animate-spin-slow" />
                         </div>
                         <h1 className="text-5xl md:text-7xl text-white mb-2 frozen-title">MIS <span className="text-[#87CEEB]">XV</span></h1>
