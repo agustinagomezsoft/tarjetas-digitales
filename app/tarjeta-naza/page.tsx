@@ -542,20 +542,15 @@ function Section10Quiz() {
 }
 
 function Section11Confirmacion() {
-    const [form, setForm] = useState({ cant: "1", inv: [{ nombre: "", apellido: "", confirma: true, alim: "ninguno", cancion: "" }] });
+    const [form, setForm] = useState({ nombre: "", apellido: "", confirma: true, alim: "ninguno", cancion: "" });
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const changeCant = (c: string) => {
-        const n = parseInt(c);
-        setForm({ cant: c, inv: Array.from({ length: n }, (_, i) => form.inv[i] || { nombre: "", apellido: "", confirma: true, alim: "ninguno", cancion: "" }) });
+    const changeField = (field: string, value: string | boolean) => {
+        setForm({ ...form, [field]: value });
     };
-    const changeInv = (i: number, f: string, v: string | boolean) => {
-        const newInv = [...form.inv];
-        newInv[i] = { ...newInv[i], [f]: v };
-        setForm({ ...form, inv: newInv });
-    };
+
     const submit = async () => {
         setError(null);
         setSending(true);
@@ -563,7 +558,7 @@ function Section11Confirmacion() {
             const res = await fetch("/api/confirmacion", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ cant: form.cant, inv: form.inv }),
+                body: JSON.stringify({ cant: "1", inv: [form] }),
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || "Error al enviar");
@@ -599,43 +594,31 @@ function Section11Confirmacion() {
                     <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                 </div>
                 <h3 className="text-center text-2xl text-white frozen-title mb-4">CONFIRMÁ TU ASISTENCIA</h3>
-                {/* MODIFICADO: Fecha más grande */}
                 <div className="text-center mb-8">
                     <p className="text-white/70 text-sm mb-2">Tenés tiempo hasta el</p>
                     <p className="text-2xl md:text-3xl text-white font-semibold">{CONFIG.fechaLimiteConfirmacion}</p>
                 </div>
                 <div className="bg-gradient-to-br from-[#1e90ff]/80 to-[#4169e1]/80 rounded-3xl p-6 border border-white/20">
-                    <div className="mb-6">
-                        <label className="block text-white/90 text-sm mb-2">Número de personas</label>
-                        <select value={form.cant} onChange={(e) => changeCant(e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white">
-                            {[1, 2, 3, 4, 5].map(n => <option key={n} value={n} className="text-[#194569]">{n} {n === 1 ? "persona" : "personas"}</option>)}
-                        </select>
-                    </div>
-                    {form.inv.map((inv, i) => (
-                        <div key={i} className="mb-6 pb-6 border-b border-white/20 last:border-0">
-                            <p className="text-white font-medium mb-4 flex items-center gap-2"><SnowflakeIcon className="w-4 h-4 text-[#87CEEB]" />Invitado {i + 1}</p>
-                            <div className="space-y-4">
-                                <input type="text" placeholder="Nombre *" value={inv.nombre} onChange={e => changeInv(i, "nombre", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
-                                <input type="text" placeholder="Apellido *" value={inv.apellido} onChange={e => changeInv(i, "apellido", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
-                                <div>
-                                    <p className="text-white/90 text-sm mb-2">¿Confirmás tu asistencia?</p>
-                                    <div className="flex gap-4">
-                                        <label className="flex items-center gap-2 text-white cursor-pointer"><input type="radio" name={`c${i}`} checked={inv.confirma} onChange={() => changeInv(i, "confirma", true)} className="w-4 h-4" />¡Confirmo!</label>
-                                        <label className="flex items-center gap-2 text-white cursor-pointer"><input type="radio" name={`c${i}`} checked={!inv.confirma} onChange={() => changeInv(i, "confirma", false)} className="w-4 h-4" />No podré</label>
-                                    </div>
-                                </div>
-                                <select value={inv.alim} onChange={e => changeInv(i, "alim", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white">
-                                    <option value="ninguno" className="text-[#194569]">Sin requerimiento</option>
-                                    <option value="vegetariano" className="text-[#194569]">Vegetariano</option>
-                                    <option value="vegano" className="text-[#194569]">Vegano</option>
-                                    <option value="celiaco" className="text-[#194569]">Celiaco</option>
-                                </select>
-                                <input type="text" placeholder="¿Canción que no puede faltar?" value={inv.cancion} onChange={e => changeInv(i, "cancion", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
+                    <div className="space-y-4">
+                        <input type="text" placeholder="Nombre *" value={form.nombre} onChange={e => changeField("nombre", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
+                        <input type="text" placeholder="Apellido *" value={form.apellido} onChange={e => changeField("apellido", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
+                        <div>
+                            <p className="text-white/90 text-sm mb-2">¿Confirmás tu asistencia?</p>
+                            <div className="flex gap-4">
+                                <label className="flex items-center gap-2 text-white cursor-pointer"><input type="radio" name="confirma" checked={form.confirma} onChange={() => changeField("confirma", true)} className="w-4 h-4" />¡Confirmo!</label>
+                                <label className="flex items-center gap-2 text-white cursor-pointer"><input type="radio" name="confirma" checked={!form.confirma} onChange={() => changeField("confirma", false)} className="w-4 h-4" />No podré</label>
                             </div>
                         </div>
-                    ))}
+                        <select value={form.alim} onChange={e => changeField("alim", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white">
+                            <option value="ninguno" className="text-[#194569]">Sin requerimiento alimentario</option>
+                            <option value="vegetariano" className="text-[#194569]">Vegetariano</option>
+                            <option value="vegano" className="text-[#194569]">Vegano</option>
+                            <option value="celiaco" className="text-[#194569]">Celíaco</option>
+                        </select>
+                        <input type="text" placeholder="¿Canción que no puede faltar? 🎵" value={form.cancion} onChange={e => changeField("cancion", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
+                    </div>
                     {error && <p className="mt-3 text-red-200 text-sm text-center">{error}</p>}
-                    <motion.button onClick={submit} disabled={sending} className="w-full py-4 mt-4 rounded-full bg-white text-[#1e90ff] font-semibold flex items-center justify-center gap-2 disabled:opacity-70" whileHover={!sending ? { scale: 1.02 } : {}} whileTap={!sending ? { scale: 0.98 } : {}}>
+                    <motion.button onClick={submit} disabled={sending} className="w-full py-4 mt-6 rounded-full bg-white text-[#1e90ff] font-semibold flex items-center justify-center gap-2 disabled:opacity-70" whileHover={!sending ? { scale: 1.02 } : {}} whileTap={!sending ? { scale: 0.98 } : {}}>
                         {sending ? <><div className="w-5 h-5 border-2 border-[#1e90ff] border-t-transparent rounded-full animate-spin" />Enviando...</> : <><SnowflakeIcon className="w-5 h-5" />Confirmar</>}
                     </motion.button>
                 </div>
