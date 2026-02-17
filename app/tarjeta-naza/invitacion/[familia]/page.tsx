@@ -19,7 +19,7 @@ const CONFIG = {
     fechaEvento: new Date("2026-04-11T22:00:00"),
     evento: { dia: "11", mes: "Abril", anio: "2026", hora: "22:00 hs" },
     misa: { fecha: "16 de Marzo", hora: "20:00 hs", lugar: "Parroquia María Reina", direccion: "El Manantial, Tucumán", mapsUrl: "https://www.google.com/maps/search/?api=1&query=Parroquia+Maria+Reina+El+Manantial+Tucuman" },
-    fiesta: { fecha: "11 de Abril de 2026", hora: "11 de Abril · 22:00 hs · 05:30 hs", lugar: "Salón de Fiestas", direccion: "Narcizo Eventos, Lules, Tucumán", mapsUrl: "https://www.google.com/maps/search/?api=1&query=+Narcizo+Eventos+Lules+Tucuman" },
+    fiesta: { fecha: "11 de Abril de 2026", hora: "· 22:00 hs · 05:30 hs", lugar: "Salón de Fiestas", direccion: "Narcizo Eventos, Lules, Tucumán", mapsUrl: "https://www.google.com/maps/search/?api=1&query=+Narcizo+Eventos+Lules+Tucuman" },
     dressCode: "Elegante",
     dressCodeNota: "La gama del color celeste / azul se reserva para la quinceañera.",
     fechaLimiteConfirmacion: "17 de Marzo de 2026",
@@ -445,7 +445,9 @@ function Section8Regalo() {
                 </div>
                 <h3 className="text-center text-2xl text-[#194569] mb-6 frozen-title">REGALO</h3>
                 <div className="frozen-card-light bg-white/40 backdrop-blur-md rounded-3xl p-6 text-center border border-white/50 shadow-[0_8px_32px_rgba(25,69,105,0.12)]">
-                    <p className="text-[#194569] mb-6">Nada es más importante que tu presencia, pero si deseás hacerme un regalo será recibido con mucho amor. También podés hacerlo en la siguiente cuenta:</p>
+                    <p className="text-[#194569] mb-4">Tu presencia es mi mayor regalo.</p>
+                    <p className="text-[#194569] mb-4">Sin embargo, para quienes deseen tener un gesto especial, en la <span className="font-semibold text-[#1e90ff]">recepción</span> encontrarás un buzón donde podrán dejar un sobre. 🎁</p>
+                    <p className="text-[#194569] mb-6">También podés hacerlo por transferencia:</p>
                     {!show ? (
                         <button onClick={() => setShow(true)} className="px-8 py-3 rounded-full bg-gradient-to-r from-[#1e90ff] to-[#4169e1] text-white font-medium">VER CUENTA</button>
                     ) : (
