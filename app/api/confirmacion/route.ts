@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { google } from "googleapis";
 
-const HEADERS = ["Fecha", "Familia", "Nombre", "Apellido", "Confirma", "Alimentación", "Canción"];
+const HEADERS = ["Fecha", "Nombre", "Apellido", "Confirma", "Alimentación", "Canción"];
 
 function getAuth() {
   const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
@@ -18,13 +18,13 @@ function getAuth() {
 async function ensureHeaderRow(sheets: ReturnType<typeof google.sheets>, spreadsheetId: string, sheetTitle: string) {
   const res = await sheets.spreadsheets.values.get({
     spreadsheetId,
-    range: `'${sheetTitle}'!A1:G1`,
+    range: `'${sheetTitle}'!A1:F1`,
   });
   const values = res.data.values;
   if (!values || values.length === 0 || !values[0]?.length) {
     await sheets.spreadsheets.values.update({
       spreadsheetId,
-      range: `'${sheetTitle}'!A1:G1`,
+      range: `'${sheetTitle}'!A1:F1`,
       valueInputOption: "RAW",
       requestBody: { values: [HEADERS] },
     });
@@ -34,10 +34,9 @@ async function ensureHeaderRow(sheets: ReturnType<typeof google.sheets>, spreads
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { cant, inv, familia } = body as {
+    const { cant, inv } = body as {
       cant?: string;
       inv?: { nombre: string; apellido: string; confirma: boolean; alim: string; cancion: string }[];
-      familia?: string; // Nuevo campo
     };
 
     if (!inv || !Array.isArray(inv) || inv.length === 0) {
@@ -59,11 +58,9 @@ export async function POST(request: Request) {
     await ensureHeaderRow(sheets, spreadsheetId, sheetTitle);
 
     const now = new Date().toLocaleString("es-AR", { dateStyle: "short", timeStyle: "short" });
-    const familiaName = familia || "Sin especificar";
 
     const rows = inv.map((i) => [
       now,
-      familiaName, // Nueva columna
       i.nombre || "",
       i.apellido || "",
       i.confirma ? "Sí" : "No",
@@ -73,7 +70,7 @@ export async function POST(request: Request) {
 
     await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: `'${sheetTitle}'!A:G`,
+      range: `'${sheetTitle}'!A:F`,
       valueInputOption: "USER_ENTERED",
       requestBody: { values: rows },
     });
