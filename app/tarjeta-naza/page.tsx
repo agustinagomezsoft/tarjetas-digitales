@@ -420,7 +420,7 @@ function Section8Regalo() {
                 <h3 className="text-center text-2xl text-[#194569] mb-6 frozen-title">REGALO</h3>
                 <div className="frozen-card-light bg-white/40 backdrop-blur-md rounded-3xl p-6 text-center border border-white/50 shadow-[0_8px_32px_rgba(25,69,105,0.12)]">
                     <p className="text-[#194569] mb-4">Tu presencia es mi mayor regalo.</p>
-                    <p className="text-[#194569] mb-4">Sin embargo, para quienes deseen tener un gesto especial, en la <span className="font-semibold text-[#1e90ff]">recepción</span> encontrarás un buzón donde podrán dejar un sobre. 🎁</p>
+                    <p className="text-[#194569] mb-4">Sin embargo, para quienes deseen tener un gesto especial, en la <span className="font-semibold text-[#1e90ff]">recepción</span> encontrarás un buzón donde podrán dejar un sobre.💵🎁</p>
                     <p className="text-[#194569] mb-6">También podés hacerlo por transferencia:</p>
                     {!show ? (
                         <button onClick={() => setShow(true)} className="px-8 py-3 rounded-full bg-gradient-to-r from-[#1e90ff] to-[#4169e1] text-white font-medium">VER CUENTA</button>
@@ -549,9 +549,19 @@ function Section11Confirmacion() {
 
     const changeField = (field: string, value: string | boolean) => {
         setForm({ ...form, [field]: value });
+        // Limpiar error cuando empieza a escribir el nombre
+        if (field === "nombre" && error) {
+            setError(null);
+        }
     };
 
     const submit = async () => {
+        // Validación: nombre obligatorio
+        if (!form.nombre.trim()) {
+            setError("Por favor, ingresá tu nombre");
+            return;
+        }
+
         setError(null);
         setSending(true);
         try {
@@ -600,8 +610,21 @@ function Section11Confirmacion() {
                 </div>
                 <div className="bg-gradient-to-br from-[#1e90ff]/80 to-[#4169e1]/80 rounded-3xl p-6 border border-white/20">
                     <div className="space-y-4">
-                        <input type="text" placeholder="Nombre *" value={form.nombre} onChange={e => changeField("nombre", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
-                        <input type="text" placeholder="Apellido *" value={form.apellido} onChange={e => changeField("apellido", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
+                        <div>
+                            <input
+                                type="text"
+                                placeholder="Nombre *"
+                                value={form.nombre}
+                                onChange={e => changeField("nombre", e.target.value)}
+                                className={clsx(
+                                    "w-full p-3 rounded-xl bg-white/20 border text-white placeholder:text-white/60",
+                                    error && !form.nombre.trim()
+                                        ? "border-red-400 bg-red-500/10"
+                                        : "border-white/30"
+                                )}
+                            />
+                        </div>
+                        <input type="text" placeholder="Apellido" value={form.apellido} onChange={e => changeField("apellido", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
                         <div>
                             <p className="text-white/90 text-sm mb-2">¿Confirmás tu asistencia?</p>
                             <div className="flex gap-4">

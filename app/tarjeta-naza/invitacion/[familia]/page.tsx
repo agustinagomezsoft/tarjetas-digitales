@@ -446,7 +446,7 @@ function Section8Regalo() {
                 <h3 className="text-center text-2xl text-[#194569] mb-6 frozen-title">REGALO</h3>
                 <div className="frozen-card-light bg-white/40 backdrop-blur-md rounded-3xl p-6 text-center border border-white/50 shadow-[0_8px_32px_rgba(25,69,105,0.12)]">
                     <p className="text-[#194569] mb-4">Tu presencia es mi mayor regalo.</p>
-                    <p className="text-[#194569] mb-4">Sin embargo, para quienes deseen tener un gesto especial, en la <span className="font-semibold text-[#1e90ff]">recepción</span> encontrarás un buzón donde podrán dejar un sobre. 🎁</p>
+                    <p className="text-[#194569] mb-4">Sin embargo, para quienes deseen tener un gesto especial, en la <span className="font-semibold text-[#1e90ff]">recepción</span> encontrarás un buzón donde podrán dejar un sobre. 💵🎁</p>
                     <p className="text-[#194569] mb-6">También podés hacerlo por transferencia:</p>
                     {!show ? (
                         <button onClick={() => setShow(true)} className="px-8 py-3 rounded-full bg-gradient-to-r from-[#1e90ff] to-[#4169e1] text-white font-medium">VER CUENTA</button>
@@ -567,6 +567,7 @@ function Section10Quiz() {
     );
 }
 
+
 // CONFIRMACIÓN CON NOMBRE DE FAMILIA Y CANTIDAD PRE-CARGADA
 function Section11Confirmacion({ familiaName, cantidadInicial }: { familiaName: string, cantidadInicial: number }) {
     const cantInicial = Math.min(Math.max(cantidadInicial, 1), 5).toString();
@@ -577,18 +578,43 @@ function Section11Confirmacion({ familiaName, cantidadInicial }: { familiaName: 
     const [sending, setSending] = useState(false);
     const [sent, setSent] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [invalidFields, setInvalidFields] = useState<number[]>([]);
 
     const changeCant = (c: string) => {
         const n = parseInt(c);
         setForm({ cant: c, inv: Array.from({ length: n }, (_, i) => form.inv[i] || { nombre: "", apellido: "", confirma: true, alim: "ninguno", cancion: "" }) });
+        setInvalidFields([]);
+        setError(null);
     };
+
     const changeInv = (i: number, f: string, v: string | boolean) => {
         const newInv = [...form.inv];
         newInv[i] = { ...newInv[i], [f]: v };
         setForm({ ...form, inv: newInv });
+        // Limpiar error del campo cuando empieza a escribir
+        if (f === "nombre" && invalidFields.includes(i)) {
+            setInvalidFields(invalidFields.filter(idx => idx !== i));
+            if (invalidFields.length === 1) setError(null);
+        }
     };
+
     const submit = async () => {
+        // Validación: todos los invitados deben tener nombre
+        const sinNombre = form.inv
+            .map((inv, i) => (!inv.nombre.trim() ? i : -1))
+            .filter(i => i !== -1);
+
+        if (sinNombre.length > 0) {
+            setInvalidFields(sinNombre);
+            setError(sinNombre.length === 1
+                ? "Por favor, ingresá el nombre del invitado"
+                : "Por favor, ingresá el nombre de todos los invitados"
+            );
+            return;
+        }
+
         setError(null);
+        setInvalidFields([]);
         setSending(true);
         try {
             const res = await fetch("/api/confirmacion", {
@@ -656,8 +682,19 @@ function Section11Confirmacion({ familiaName, cantidadInicial }: { familiaName: 
                         <div key={i} className="mb-6 pb-6 border-b border-white/20 last:border-0">
                             <p className="text-white font-medium mb-4 flex items-center gap-2"><SnowflakeIcon className="w-4 h-4 text-[#87CEEB]" />Invitado {i + 1}</p>
                             <div className="space-y-4">
-                                <input type="text" placeholder="Nombre *" value={inv.nombre} onChange={e => changeInv(i, "nombre", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
-                                <input type="text" placeholder="Apellido *" value={inv.apellido} onChange={e => changeInv(i, "apellido", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
+                                <input
+                                    type="text"
+                                    placeholder="Nombre *"
+                                    value={inv.nombre}
+                                    onChange={e => changeInv(i, "nombre", e.target.value)}
+                                    className={clsx(
+                                        "w-full p-3 rounded-xl bg-white/20 border text-white placeholder:text-white/60",
+                                        invalidFields.includes(i)
+                                            ? "border-red-400 bg-red-500/10"
+                                            : "border-white/30"
+                                    )}
+                                />
+                                <input type="text" placeholder="Apellido" value={inv.apellido} onChange={e => changeInv(i, "apellido", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
                                 <div>
                                     <p className="text-white/90 text-sm mb-2">¿Confirmás tu asistencia?</p>
                                     <div className="flex gap-4">
@@ -669,9 +706,9 @@ function Section11Confirmacion({ familiaName, cantidadInicial }: { familiaName: 
                                     <option value="ninguno" className="text-[#194569]">Sin requerimiento</option>
                                     <option value="vegetariano" className="text-[#194569]">Vegetariano</option>
                                     <option value="vegano" className="text-[#194569]">Vegano</option>
-                                    <option value="celiaco" className="text-[#194569]">Celiaco</option>
+                                    <option value="celiaco" className="text-[#194569]">Celíaco</option>
                                 </select>
-                                <input type="text" placeholder="¿Canción que no puede faltar?" value={inv.cancion} onChange={e => changeInv(i, "cancion", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
+                                <input type="text" placeholder="¿Canción que no puede faltar? 🎵" value={inv.cancion} onChange={e => changeInv(i, "cancion", e.target.value)} className="w-full p-3 rounded-xl bg-white/20 border border-white/30 text-white placeholder:text-white/60" />
                             </div>
                         </div>
                     ))}
