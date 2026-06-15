@@ -47,7 +47,7 @@ const CONFIG = {
         { fecha: "Marzo 2025", icono: "💍", titulo: "El pedido", descripcion: "Bajo las estrellas de Cafayate, con una copa de vino y el corazón en la mano, Matias le propuso a Agustina." },
     ],
     mesa: {
-        alias: "sofia.matias.boda",
+        alias: "agustina.matias.boda",
         banco: "Galicia",
     },
     frase: "El amor no mira con los ojos, sino con el alma.",
@@ -101,61 +101,61 @@ export default function TarjetaBodaDemo() {
 
     if (!showContent) {
         return (
-            <div className="min-h-screen relative overflow-hidden bg-gradient-to-b from-[#0D0508] via-[#1F0A14] to-[#2D1020]">
+            <div className="min-h-dvh relative overflow-hidden bg-gradient-to-b from-[#0D0508] via-[#1F0A14] to-[#2D1020]">
                 <PetalsFalling />
                 <GoldStars />
                 <motion.button
                     onClick={toggleMusic}
-                    className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-[#C9A84C] to-[#8B6030] shadow-xl flex items-center justify-center border border-[#C9A84C]/40"
+                    className="fixed bottom-6 right-6 z-50 w-12 h-12 rounded-full bg-gradient-to-br from-[#C9A84C] to-[#8B6030] shadow-xl flex items-center justify-center border border-[#C9A84C]/40"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                 >
                     {isPlaying ? <Pause className="w-5 h-5 text-white" /> : <Play className="w-5 h-5 text-white ml-0.5" />}
                 </motion.button>
                 <motion.div
-                    className="min-h-screen flex flex-col items-center justify-center px-6 relative z-10 py-20"
+                    className="min-h-dvh flex flex-col items-center justify-center px-6 relative z-10 py-6"
                     variants={staggerContainer}
                     initial="hidden"
                     animate="visible"
                 >
-                    <motion.div className="mb-8 w-36 h-36 animate-ring-pulse" variants={staggerItem}>
+                    <motion.div className="mb-4 w-24 h-24 md:w-36 md:h-36 animate-ring-pulse" variants={staggerItem}>
                         <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}>
                             <RingsSVG />
                         </motion.div>
                     </motion.div>
 
-                    <motion.div className="text-center mb-8" variants={staggerItem}>
-                        <p className="text-[#C9A84C]/80 text-xs tracking-[0.6em] uppercase mb-3 boda-subtitle">Con inmensa alegría</p>
-                        <p className="text-[#F5E6C8]/60 text-sm tracking-[0.35em] uppercase mb-1 boda-subtitle">te invitamos a celebrar</p>
-                        <p className="text-[#C9A84C] text-lg tracking-[0.4em] uppercase mb-8 boda-subtitle">nuestra boda</p>
+                    <motion.div className="text-center mb-4" variants={staggerItem}>
+                        <p className="text-[#C9A84C]/80 text-xs tracking-[0.6em] uppercase mb-2 boda-subtitle">Con inmensa alegría</p>
+                        <p className="text-[#F5E6C8]/60 text-xs tracking-[0.35em] uppercase mb-1 boda-subtitle">te invitamos a celebrar</p>
+                        <p className="text-[#C9A84C] text-base tracking-[0.4em] uppercase mb-4 boda-subtitle">nuestra boda</p>
 
-                        <h1 className="boda-name text-[#F5E6C8] leading-none" style={{ fontSize: "clamp(3rem, 10vw, 5rem)" }}>
+                        <h1 className="boda-name text-[#F5E6C8] leading-none" style={{ fontSize: "clamp(2.5rem, 9vw, 5rem)" }}>
                             {CONFIG.novia}
                         </h1>
-                        <div className="flex items-center justify-center gap-4 my-3">
+                        <div className="flex items-center justify-center gap-4 my-2">
                             <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#C9A84C]/60" />
                             <span className="text-[#C9A84C] text-2xl boda-subtitle">&amp;</span>
                             <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#C9A84C]/60" />
                         </div>
-                        <h1 className="boda-name text-[#F5E6C8] leading-none" style={{ fontSize: "clamp(3rem, 10vw, 5rem)" }}>
+                        <h1 className="boda-name text-[#F5E6C8] leading-none" style={{ fontSize: "clamp(2.5rem, 9vw, 5rem)" }}>
                             {CONFIG.novio}
                         </h1>
                     </motion.div>
 
-                    <motion.div className="text-center mb-10" variants={staggerItem}>
+                    <motion.div className="text-center mb-6" variants={staggerItem}>
                         <div className="flex items-center justify-center gap-3">
-                            <PetalIcon className="w-4 h-4 text-[#E8B4B8]/60" />
-                            <p className="text-[#E8B4B8]/90 boda-subtitle text-xl">
+                            <PetalIcon className="w-3 h-3 text-[#E8B4B8]/60" />
+                            <p className="text-[#E8B4B8]/90 boda-subtitle text-lg">
                                 {CONFIG.evento.dia} · {CONFIG.evento.mes} · {CONFIG.evento.anio}
                             </p>
-                            <PetalIcon className="w-4 h-4 text-[#E8B4B8]/60" />
+                            <PetalIcon className="w-3 h-3 text-[#E8B4B8]/60" />
                         </div>
-                        <p className="text-[#C9A84C]/60 boda-subtitle text-sm mt-2">Tucumán, Argentina</p>
+                        <p className="text-[#C9A84C]/60 boda-subtitle text-xs mt-1">Tucumán, Argentina</p>
                     </motion.div>
 
                     <motion.button
                         onClick={handleEnter}
-                        className="px-12 py-4 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#A07832] text-white font-medium tracking-widest uppercase text-sm shadow-[0_0_40px_rgba(201,168,76,0.35)] border border-[#C9A84C]/20 boda-subtitle"
+                        className="px-10 py-3.5 rounded-full bg-gradient-to-r from-[#C9A84C] to-[#A07832] text-white font-medium tracking-widest uppercase text-sm shadow-[0_0_40px_rgba(201,168,76,0.35)] border border-[#C9A84C]/20 boda-subtitle"
                         variants={staggerItem}
                         whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(201,168,76,0.5)" }}
                         whileTap={{ scale: 0.98 }}

@@ -23,14 +23,29 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-    title: "Agustina & Matias | Casamiento",
-    description: "Invitación digital al casamiento de Agustina Marchetti y Matias Herrera. 15 de Noviembre de 2025, Tucumán.",
+    title: "Agustina & Matias | Casamiento 💍",
+    description: "¡Nos casamos! Te invitamos a celebrar el casamiento de Agustina y Matias. 15 de Noviembre de 2025, Tucumán.",
+    keywords: ["casamiento", "boda", "Agustina", "Matias", "invitación", "Tucumán"],
+    authors: [{ name: "Agustina Tarjetas Digitales" }],
+
+    // Open Graph — para WhatsApp, Facebook, LinkedIn, etc.
     openGraph: {
-        title: "Agustina & Matias | Casamiento",
-        description: "¡Nos casamos! Te invitamos a celebrar este día tan especial.",
+        title: "💍 Agustina & Matias | ¡Nos casamos!",
+        description: "Agustina y Matias te invitan a celebrar su boda. 15 de Noviembre de 2025 · Tucumán 🌹",
         type: "website",
         locale: "es_AR",
+        siteName: "Casamiento Agustina & Matias",
     },
+
+    // Twitter Card — para Twitter/X
+    twitter: {
+        card: "summary_large_image",
+        title: "💍 Agustina & Matias | ¡Nos casamos!",
+        description: "Agustina y Matias te invitan a celebrar su boda. 15 de Noviembre de 2025 · Tucumán 🌹",
+    },
+
+    // Color de tema en móviles
+    themeColor: "#1F0A14",
 };
 
 export default function BodaDemoLayout({ children }: { children: React.ReactNode }) {
